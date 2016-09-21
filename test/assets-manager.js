@@ -4,6 +4,7 @@ var expect = require("expect.js");
 var Q = require("q");
 
 var AssetsManager = require("../lib/assets-manager");
+var helpers = require("../lib/helpers");
 
 var imageBuffer = new Buffer([
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
@@ -30,9 +31,11 @@ imageData64 += "/9nGWQeAAAAAWJLR0QAiAUdSAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAAd0SU1FB
 imageData64 += "8LEg0LF8qDZQAAAAA9SURBVAgdDcHBDQAhDAPBLQfRD/2c8opcBfILpcrzDCeY4PM";
 imageData64 += "VbhUuC+sJ3zITTFB6Q+sNpbXpblFamwlO/JFNIn9yzLB/AAAAAElFTkSuQmCC";
 
+var imageBlob = helpers.createBlob([imageBuffer], {type: "image/png"});
+
 var FILES_URL = location.protocol + "//" + location.host + "/files/";
 
-describe("wnp/assets-manager", function() {
+describe("AssetsManager", function() {
 
     describe("assets", function() {
 
@@ -93,7 +96,22 @@ describe("wnp/assets-manager", function() {
                     return assets.getAssetAsData64Url(id);
                 })
                 .then(function(assetBuffer) {
-                    expect(assetBuffer).to.be.eql(imageBuffer);
+                    expect(assetBuffer).to.be.eql(imageData64);
+                });
+        });
+
+        it("can add and get assets from a blob", function() {
+            var assets = new AssetsManager();
+
+            return assets.addAssetFromBlob(imageBlob)
+                .then(function(id) {
+                    expect(id).to.be.a("string");
+                    expect(assets.$data.assetsList[id].mime).to.equal("image/png");
+                    expect(assets.$data.assetsList[id].as.buffer).to.eql(imageBuffer);
+                    return assets.getAssetAsBlob(id);
+                })
+                .then(function(assetBlob) {
+                    expect(assetBlob).to.be(imageBlob);
                 });
         });
 
