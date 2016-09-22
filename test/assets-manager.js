@@ -4,7 +4,7 @@ var expect = require("expect.js");
 var Q = require("q");
 
 var AssetsManager = require("../lib/assets-manager");
-var helpers = require("../lib/helpers");
+var AssetsConverter = require("../lib/assets-converter");
 
 var imageBuffer = new Buffer([
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
@@ -25,17 +25,25 @@ var imageBuffer = new Buffer([
     0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
 ]);
 
-var imageData64 = "data:image/png;base64,";
-imageData64 += "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEUAAAD/AAD//";
-imageData64 += "/9nGWQeAAAAAWJLR0QAiAUdSAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAAd0SU1FB9";
-imageData64 += "8LEg0LF8qDZQAAAAA9SURBVAgdDcHBDQAhDAPBLQfRD/2c8opcBfILpcrzDCeY4PM";
-imageData64 += "VbhUuC+sJ3zITTFB6Q+sNpbXpblFamwlO/JFNIn9yzLB/AAAAAElFTkSuQmCC";
+var imageData64Url = "data:image/png;base64,";
+imageData64Url += "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEUAAAD/AAD//";
+imageData64Url += "/9nGWQeAAAAAWJLR0QAiAUdSAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAAd0SU1FB9";
+imageData64Url += "8LEg0LF8qDZQAAAAA9SURBVAgdDcHBDQAhDAPBLQfRD/2c8opcBfILpcrzDCeY4PM";
+imageData64Url += "VbhUuC+sJ3zITTFB6Q+sNpbXpblFamwlO/JFNIn9yzLB/AAAAAElFTkSuQmCC";
 
-var imageBlob = helpers.createBlob([imageBuffer], {type: "image/png"});
+var imageBlob;
 
 var FILES_URL = location.protocol + "//" + location.host + "/files/";
 
 describe("AssetsManager", function() {
+
+    before(function() {
+        var asset = { mime: "image/png", as: { buffer: imageBuffer } };
+        return AssetsConverter._bufferToBlob(asset)
+            .then(function(asset) {
+                imageBlob = asset.as.blob;
+            });
+    });
 
     describe("assets", function() {
 
@@ -67,7 +75,7 @@ describe("AssetsManager", function() {
                         resolve(assets.addAssetFromImage(image));
                     };
 
-                    image.src = imageData64;
+                    image.src = imageData64Url;
                 })
                 .then(function(id) {
                     expect(assets.$data.assetsList[id].mime).to.equal("image/png");
@@ -90,13 +98,13 @@ describe("AssetsManager", function() {
         it("can add and get assets from a data-64 URL", function() {
             var assets = new AssetsManager();
 
-            return assets.addAssetFromData64Url(imageData64)
+            return assets.addAssetFromData64Url(imageData64Url)
                 .then(function(id) {
                     expect(assets.$data.assetsList[id].mime).to.equal("image/png");
                     return assets.getAssetAsData64Url(id);
                 })
-                .then(function(assetBuffer) {
-                    expect(assetBuffer).to.be.eql(imageData64);
+                .then(function(assetData64Url) {
+                    expect(assetData64Url).to.be.eql(imageData64Url);
                 });
         });
 
@@ -107,11 +115,35 @@ describe("AssetsManager", function() {
                 .then(function(id) {
                     expect(id).to.be.a("string");
                     expect(assets.$data.assetsList[id].mime).to.equal("image/png");
-                    expect(assets.$data.assetsList[id].as.buffer).to.eql(imageBuffer);
                     return assets.getAssetAsBlob(id);
                 })
                 .then(function(assetBlob) {
                     expect(assetBlob).to.be(imageBlob);
+                });
+        });
+
+        it("can convert to any type from buffer", function() {
+            var assets = new AssetsManager();
+
+            return assets.addAssetFromBuffer(imageBuffer, { id: "asset", mime: "image/png" })
+                .then(function() { return assets.getAssetAsBlob("asset"); })
+                .then(function(assetBlob) {
+                    expect(assetBlob).to.be.ok();
+                    expect(assetBlob).to.be.a(Blob);
+                    return assets.getAssetAsBlobUrl("asset");
+                })
+                .then(function(assetBlobUrl) {
+                    expect(assetBlobUrl).to.be.ok();
+                    expect(assetBlobUrl).to.be.a("string");
+                    return assets.getAssetAsData64Url("asset");
+                })
+                .then(function(assetData64Url) {
+                    expect(assetData64Url).to.equal(imageData64Url);
+                    return assets.getAssetAsImage("asset");
+                })
+                .then(function(assetImage) {
+                    expect(assetImage).to.be.ok();
+                    expect(assetImage).to.be.an(Image);
                 });
         });
 
