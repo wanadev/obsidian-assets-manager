@@ -20,6 +20,7 @@
   ],
   "dependencies": {
     "abitbol": "^1.1.0",
+    "js-sha1": "^0.3.0",
     "obsidian-http-request": "^1.1.4",
     "obsidian-pack": "0.0.0",
     "q": "^1.4.1",
