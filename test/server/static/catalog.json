@@ -1,0 +1,21 @@
+{
+    "info": {
+        "name": "catalog",
+        "version": 0
+    },
+    "packages": {
+        "pack": {
+            "url": "./pack.opak",
+            "assets": {
+                "image": {
+                    "offset": null,
+                    "length": 192,
+                    "mime": "image/png",
+                    "metadata": {
+                        "all": "right"
+                    }
+                }
+            }
+        },
+    }
+}
