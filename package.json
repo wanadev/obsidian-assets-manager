@@ -21,6 +21,7 @@
   "dependencies": {
     "abitbol": "^1.1.0",
     "obsidian-http-request": "^1.1.4",
+    "obsidian-pack": "0.0.0",
     "q": "^1.4.1",
     "uuid": "^2.0.3"
   },
