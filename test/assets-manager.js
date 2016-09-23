@@ -7,6 +7,8 @@ var Q = require("q");
 var ObsidianAssetsManager = require("../lib/assets-manager");
 var AssetsConverter = require("../lib/assets-converter");
 
+var FILES_Url = location.protocol + "//" + location.host + "/files/";
+
 var imageBuffer = new Buffer([
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
     0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
@@ -32,6 +34,7 @@ imageData64Url += "/9nGWQeAAAAAWJLR0QAiAUdSAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAAd0SU
 imageData64Url += "8LEg0LF8qDZQAAAAA9SURBVAgdDcHBDQAhDAPBLQfRD/2c8opcBfILpcrzDCeY4PM";
 imageData64Url += "VbhUuC+sJ3zITTFB6Q+sNpbXpblFamwlO/JFNIn9yzLB/AAAAAElFTkSuQmCC";
 
+var imageUrl = FILES_Url + "image.png";
 var imageBlob;
 
 var pack = new ObsidianPackFile();
@@ -40,22 +43,32 @@ pack.addAssetFromBuffer(imageBuffer, "image", { mime: "image/png", metadata: { a
 
 var packBuffer = pack.exportAsBuffer();
 var packData64Url = pack.exportAsData64Url();
-
-var FILES_URL = location.protocol + "//" + location.host + "/files/";
+var packUrl = FILES_Url + "pack.opak";
+var packBlob;
 
 describe("ObsidianAssetsManager", function() {
 
     before(function() {
+        var packAsset = { mime: ObsidianPackFile.MIMETYPE, as: { buffer: packBuffer } };
         var asset = { mime: "image/png", as: { buffer: imageBuffer } };
+
         return AssetsConverter._bufferToBlob(asset)
             .then(function(asset) {
                 imageBlob = asset.as.blob;
+                return AssetsConverter._bufferToBlob(packAsset);
+            })
+            .then(function(packAsset) {
+                packBlob = packAsset.as.blob;
+                return AssetsConverter._blobToBlobUrl(packAsset);
+            })
+            .then(function(packAsset) {
+                packBlob = packAsset.as.blob;
             });
     });
 
     describe("assets", function() {
 
-        // @todo remove/exists
+        // @fixme remove/exists
 
         it("can add and get assets from buffer", function() {
             var assets = new ObsidianAssetsManager();
@@ -96,9 +109,8 @@ describe("ObsidianAssetsManager", function() {
                 });
         });
 
-        it("can add assets from a URL", function() {
+        it("can add assets from a Url", function() {
             var assets = new ObsidianAssetsManager();
-            var imageUrl = FILES_URL + "image.png";
 
             return assets.addAssetFromUrl(imageUrl)
                 .then(function(id) {
@@ -107,7 +119,7 @@ describe("ObsidianAssetsManager", function() {
                 });
         });
 
-        it("can add and get assets from a data-64 URL", function() {
+        it("can add and get assets from a data64Url", function() {
             var assets = new ObsidianAssetsManager();
 
             return assets.addAssetFromData64Url(imageData64Url)
@@ -163,7 +175,7 @@ describe("ObsidianAssetsManager", function() {
 
     describe("packages", function() {
 
-        it("can import package from buffer", function() {
+        it("can import package from a buffer", function() {
             var assets = new ObsidianAssetsManager();
 
             return assets.importAssetPackageFromBuffer(packBuffer)
@@ -176,10 +188,36 @@ describe("ObsidianAssetsManager", function() {
                 });
         });
 
-        it("can import package from data64Url", function() {
+        it("can import package from a data64Url", function() {
             var assets = new ObsidianAssetsManager();
 
-            return assets.importAssetPackageFromBuffer(packData64Url)
+            return assets.importAssetPackageFromData64Url(packData64Url)
+                .then(function(pack) {
+                    return assets.getAssetAsBuffer("pack:pack/image");
+                })
+                .then(function(assetBuffer) {
+                    expect(assets.$data.assetList["pack:pack/image"].metadata.all).to.equal("right");
+                    expect(assetBuffer).to.be.eql(imageBuffer);
+                });
+        });
+
+        it("can import package from a Url", function() {
+            var assets = new ObsidianAssetsManager();
+
+            return assets.importAssetPackageFromUrl(packUrl)
+                .then(function(pack) {
+                    return assets.getAssetAsBuffer("pack:pack/image");
+                })
+                .then(function(assetBuffer) {
+                    expect(assets.$data.assetList["pack:pack/image"].metadata.all).to.equal("right");
+                    expect(assetBuffer).to.be.eql(imageBuffer);
+                });
+        });
+
+        it("can import package from a blob", function() {
+            var assets = new ObsidianAssetsManager();
+
+            return assets.importAssetPackageFromBlob(packBlob)
                 .then(function(pack) {
                     return assets.getAssetAsBuffer("pack:pack/image");
                 })
