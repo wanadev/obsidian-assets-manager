@@ -5,7 +5,7 @@
     },
     "packages": {
         "pack": {
-            "url": "./pack.opak",
+            "url": "pack.opak",
             "assets": {
                 "image": {
                     "offset": null,
@@ -16,6 +16,6 @@
                     }
                 }
             }
-        },
+        }
     }
 }
