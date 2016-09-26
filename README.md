@@ -14,4 +14,4 @@ Documentation:
 
 ## Changelog
 
-* **0.0.0**: init 
+* **1.0.0**: assets manager and catalog

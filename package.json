@@ -1,6 +1,6 @@
 {
   "name": "obsidian-assets-manager",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Assets manager for Wanadev's obsidan projects",
   "main": "lib/index.js",
   "scripts": {
