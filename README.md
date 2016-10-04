@@ -14,4 +14,9 @@ Documentation:
 
 ## Changelog
 
-* **1.0.0**: assets manager and catalog
+* **1.0.1**:
+    * updated to `obsidian-pack` 1.0.0
+    * small fixes
+* **1.0.0**:
+    * assets manager
+    * assets catalog
