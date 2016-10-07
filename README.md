@@ -12,6 +12,24 @@ Documentation:
 * [https://github.com/wanadev/obsidian-assets-manager/tree/master/doc](https://github.com/wanadev/obsidian-assets-manager/tree/master/doc)
 
 
+## CLI Tool: catalog generator
+
+`obsidian-catalog` extracts data from Obsidian Pack files and generates an Obsidian Catalog file.
+
+    Usage: obsidian-catalog [options] <packFiles>
+
+    Options:
+      --output, -o        Output file (print to stdout if not defined)      [string]
+      --pretty-print, -p  Makes the output JSON human-readable             [boolean]
+      --version, -v       Show version number                              [boolean]
+      --help, -h          Show help                                        [boolean]
+
+Examples:
+
+    $ obsidian-catalog assets1.opak assets2.opak
+    $ obsidian-catalog -o catalog.json assets.opak
+
+
 ## Changelog
 
 * **1.0.1**:
