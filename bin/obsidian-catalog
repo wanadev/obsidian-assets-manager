@@ -1,0 +1,61 @@
+#!/usr/bin/env node
+
+"use strict";
+
+var fs = require("fs");
+
+var yargs = require("yargs");
+
+var pkg = require("../package.json");
+var ObsidianPackFile = require("obsidian-pack");
+
+function getPackIndex(pack) {
+    var index = {};
+    var assetList = pack.assetList;
+    for (var i = 0 ; i < assetList.length ; i++) {
+        var assetName = assetList[i];
+        index[assetName] = pack.getAssetRecord(assetName);
+    }
+    return index;
+}
+
+var argv = yargs
+
+    .option("output", {
+        describe: "Output file (print to stdout if not defined)",
+        alias: "o",
+        nargs: 1,
+        normalize: true
+    })
+
+    .option("pretty-print", {
+        describe: "Makes the output JSON human-readable",
+        alias: "p",
+        type: "boolean"
+    })
+
+    .version(pkg.version).alias("version", "v")
+    .usage("Usage: obsidian-catalog [options] <packFiles>")
+    .help().alias("help", "h")
+    .example("obsidian-catalog assets1.opak assets2.opak")
+    .example("obsidian-catalog -o catalog.json assets.opak")
+    .locale("en")
+    .argv;
+
+var catalog = {
+    packages: {}
+};
+
+for (var i = 0 ; i < argv._.length ; i++) {
+    var packBin = fs.readFileSync(argv._[i]);
+    var pack = new ObsidianPackFile(packBin);
+    catalog.packages[pack.packName] = getPackIndex(pack);
+}
+
+var catalogStr = JSON.stringify(catalog, null, argv["pretty-print"] ? 2 : 0);
+
+if (argv.output) {
+    fs.writeFileSync(argv.output, catalogStr);
+} else {
+    console.log(catalogStr);
+}

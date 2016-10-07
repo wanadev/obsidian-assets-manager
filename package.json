@@ -8,6 +8,9 @@
     "start": "pm2 start -f test/server/server.js --name=obsidian-proxy-server-test --watch && sleep 1",
     "stop": "pm2 delete obsidian-proxy-server-test"
   },
+  "directories": {
+    "bin": "./bin"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wanadev/obsidian-assets-manager.git"
@@ -24,7 +27,8 @@
     "obsidian-http-request": "^1.1.4",
     "obsidian-pack": "1.0.0",
     "q": "^1.4.1",
-    "uuid": "^2.0.3"
+    "uuid": "^2.0.3",
+    "yargs": "^6.0.0"
   },
   "devDependencies": {
     "body-parser": "^1.15.2",
