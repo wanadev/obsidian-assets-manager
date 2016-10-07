@@ -3,6 +3,7 @@
 "use strict";
 
 var fs = require("fs");
+var path = require("path");
 
 var yargs = require("yargs");
 
@@ -47,9 +48,13 @@ var catalog = {
 };
 
 for (var i = 0 ; i < argv._.length ; i++) {
-    var packBin = fs.readFileSync(argv._[i]);
+    var packPath = argv._[i];
+    var packBin = fs.readFileSync(packPath);
     var pack = new ObsidianPackFile(packBin);
-    catalog.packages[pack.packName] = getPackIndex(pack);
+    catalog.packages[pack.packName] = {
+        url: path.basename(packPath),
+        assets: getPackIndex(pack)
+    };
 }
 
 var catalogStr = JSON.stringify(catalog, null, argv["pretty-print"] ? 2 : 0);
