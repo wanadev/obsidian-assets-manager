@@ -32,7 +32,7 @@ Examples:
 
 ## Changelog
 
-* **1.0.2**:
+* **1.1.0**:
     * added `obsidian-catalog` CLI tool
 * **1.0.1**:
     * updated to `obsidian-pack` 1.0.0
