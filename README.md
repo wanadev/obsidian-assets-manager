@@ -32,7 +32,9 @@ Examples:
 
 ## Changelog
 
-* **1.0.2**:
+* **1.2.0**:
+    * replaced `js-sha1` lib by `sha.js`
+* **1.1.0**:
     * added `obsidian-catalog` CLI tool
 * **1.0.1**:
     * updated to `obsidian-pack` 1.0.0
