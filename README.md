@@ -32,6 +32,8 @@ Examples:
 
 ## Changelog
 
+* **1.3.0**:
+    * added a function to get an asset id from its blob url
 * **1.2.0**:
     * replaced `js-sha1` lib by `sha.js`
 * **1.1.0**:
