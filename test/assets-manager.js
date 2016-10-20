@@ -160,6 +160,22 @@ describe("ObsidianAssetsManager", function() {
                 });
         });
 
+        it("can add and get assets id from a blob", function() {
+            var assets = new ObsidianAssetsManager();
+            var assetID = null;
+            return assets.addAssetFromBlob(imageBlob)
+                .then(function(id) {
+                    assetID = id;
+                    expect(id).to.be.a("string");
+                    expect(assets.$data.assetList[id].source).to.match(/^blob:/);
+                    expect(assets.$data.assetList[id].mime).to.equal("image/png");
+                    return assets.getAssetAsBlobUrl(id);
+                })
+                .then(function(assetBlobUrl) {
+                    expect(assets.getAssetIdFromBlobUrl(assetBlobUrl)).to.be(assetID);
+                });
+        });
+
         it("can convert to any type from buffer", function() {
             var assets = new ObsidianAssetsManager();
 
