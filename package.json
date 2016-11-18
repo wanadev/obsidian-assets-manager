@@ -27,7 +27,7 @@
     "obsidian-pack": "1.0.0",
     "q": "^1.4.1",
     "sha.js": "^2.4.7",
-    "uuid": "^2.0.3",
+    "uuid": "^3.0.0",
     "yargs": "^6.0.0"
   },
   "devDependencies": {
