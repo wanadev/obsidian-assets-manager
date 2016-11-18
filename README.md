@@ -32,6 +32,8 @@ Examples:
 
 ## Changelog
 
+* **1.3.3**:
+    * updated to obsidian-pack@1.0.1
 * **1.3.2**:
     * updated to uuid@3.0.0
 * **1.3.1**:
