@@ -32,6 +32,8 @@ Examples:
 
 ## Changelog
 
+* **1.3.2**:
+    * updated to uuid@3.0.0
 * **1.3.1**:
     * updated to sha.js@2.4.7
 * **1.3.0**:
