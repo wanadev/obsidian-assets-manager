@@ -32,6 +32,8 @@ Examples:
 
 ## Changelog
 
+* **1.3.4**:
+    * added a function to get an asset id from its blob
 * **1.3.3**:
     * updated to obsidian-pack@1.0.1
 * **1.3.2**:
