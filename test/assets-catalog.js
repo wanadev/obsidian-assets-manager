@@ -36,7 +36,6 @@ describe("ObsidianAssetsCatalog", function() {
             var assets = new ObsidianAssetsCatalog();
             assets.rootUrl = "files/";
 
-
             return assets.importAssetCatalog(catalog)
                 .then(function(catalogName) {
                     expect(catalogName).to.equal("catalog");
@@ -49,6 +48,14 @@ describe("ObsidianAssetsCatalog", function() {
                         metadata: {
                             "all": "right"
                         }
+                    });
+
+                    expect(assets.getAssetRecord("standalone")).to.eql({
+                        "url": "image.png",
+                        "offset": null,
+                        "length": 192,
+                        "mime": "image/png",
+                        "metadata": {}
                     });
 
                     return assets.getAssetAsBuffer("pack:pack/image");
@@ -67,8 +74,12 @@ describe("ObsidianAssetsCatalog", function() {
                 })
                 .then(function(assetBlob) {
                     expect(assetBlob).to.be.ok();
-                    return assets.getAssetAsBlobUrl("pack:pack/image");
-                });
+                    return assets.getAssetAsBuffer("standalone");
+                })
+                .then(function(assetBuffer) {
+                    expect(assetBuffer).to.eql(imageBuffer);
+                })
+                .done();
         });
 
         it("can import a catalog from a Url", function() {
