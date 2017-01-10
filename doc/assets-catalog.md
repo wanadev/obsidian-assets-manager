@@ -33,7 +33,6 @@ A catalog is a JSON file like:
     "assets": {
         "asset1": {
             "url": "image.jpg",
-            "offset": null,
             "length": 256,
             "mime": "image/jpeg",
             "metadata": {}

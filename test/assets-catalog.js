@@ -52,7 +52,6 @@ describe("ObsidianAssetsCatalog", function() {
 
                     expect(assets.getAssetRecord("standalone")).to.eql({
                         "url": "image.png",
-                        "offset": null,
                         "length": 192,
                         "mime": "image/png",
                         "metadata": {}
