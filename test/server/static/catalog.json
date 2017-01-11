@@ -17,5 +17,13 @@
                 }
             }
         }
+    },
+    "assets": {
+        "standalone": {
+            "url": "image.png",
+            "length": 192,
+            "mime": "image/png",
+            "metadata": {}
+        }
     }
 }

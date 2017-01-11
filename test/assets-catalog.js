@@ -36,10 +36,18 @@ describe("ObsidianAssetsCatalog", function() {
             var assets = new ObsidianAssetsCatalog();
             assets.rootUrl = "files/";
 
-
             return assets.importAssetCatalog(catalog)
                 .then(function(catalogName) {
                     expect(catalogName).to.equal("catalog");
+                });
+        });
+
+        it("can manage catalog's packs", function() {
+            var assets = new ObsidianAssetsCatalog();
+            assets.rootUrl = "files/";
+
+            return assets.importAssetCatalog(catalog)
+                .then(function(catalogName) {
                     expect(assets.assetLoaded("pack:pack/image")).not.to.be.ok();
                     expect(assets.assetExists("pack:pack/image")).to.be.ok();
                     expect(assets.getAssetRecord("pack:pack/image")).to.eql({
@@ -67,7 +75,40 @@ describe("ObsidianAssetsCatalog", function() {
                 })
                 .then(function(assetBlob) {
                     expect(assetBlob).to.be.ok();
-                    return assets.getAssetAsBlobUrl("pack:pack/image");
+                });
+        });
+
+        it("can manage catalog's standalone assets", function() {
+            var assets = new ObsidianAssetsCatalog();
+            assets.rootUrl = "files/";
+
+            return assets.importAssetCatalog(catalog)
+                .then(function(catalogName) {
+                    expect(assets.assetLoaded("standalone")).not.to.be.ok();
+                    expect(assets.assetExists("standalone")).to.be.ok();
+                    expect(assets.getAssetRecord("standalone")).to.eql({
+                        "url": "image.png",
+                        "length": 192,
+                        "mime": "image/png",
+                        "metadata": {}
+                    });
+
+                    return assets.getAssetAsBuffer("standalone");
+                })
+                .then(function(assetBuffer) {
+                    expect(assetBuffer).to.eql(imageBuffer);
+                    return assets.getAssetAsImage("standalone");
+                })
+                .then(function(assetImage) {
+                    expect(assetImage).to.be.ok();
+                    return assets.getAssetAsBlobUrl("standalone");
+                })
+                .then(function(assetBlobUrl) {
+                    expect(assetBlobUrl).to.be.ok();
+                    return assets.getAssetAsBlob("standalone");
+                })
+                .then(function(assetBlob) {
+                    expect(assetBlob).to.be.ok();
                 });
         });
 

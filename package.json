@@ -4,7 +4,7 @@
   "description": "Assets manager for Wanadev's obsidan projects",
   "main": "lib/index.js",
   "scripts": {
-    "test": "./nodes_modules/.bin/grunt test",
+    "test": "grunt test",
     "start": "pm2 start -f test/server/server.js --name=obsidian-proxy-server-test --watch && sleep 1",
     "stop": "pm2 delete obsidian-proxy-server-test"
   },
