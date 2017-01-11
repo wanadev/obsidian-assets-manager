@@ -32,6 +32,8 @@ Examples:
 
 ## Changelog
 
+* **1.4.0**:
+    * Catalog can now manage individual assets
 * **1.3.4**:
     * added a function to get an asset id from its blob
 * **1.3.3**:
