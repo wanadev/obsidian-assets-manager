@@ -2,7 +2,7 @@
 
 var ObsidianPackFile = require("obsidian-pack");
 var expect = require("expect.js");
-var sha256 = require("sha.js")("sha256");
+var sha = require("sha.js");
 var Q = require("q");
 
 var ObsidianAssetsManager = require("../lib/assets-manager");
@@ -125,7 +125,7 @@ describe("ObsidianAssetsManager", function() {
 
             return assets.addAssetFromUrl(imageUrl)
                 .then(function(id) {
-                    expect(id).to.equal("url:" + sha256.update(imageUrl, "utf8").digest("hex"));
+                    expect(id).to.equal("url:" + sha("sha256").update(imageUrl, "utf8").digest("hex"));
                     expect(assets.$data.assetList[id].source).to.match(/^url:/);
                     expect(assets.$data.assetList[id].mime).to.equal("image/png");
                 });
