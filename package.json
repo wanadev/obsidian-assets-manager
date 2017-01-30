@@ -22,7 +22,7 @@
     "assets-manager"
   ],
   "dependencies": {
-    "abitbol": "^1.1.0",
+    "abitbol": "^1.1.1",
     "obsidian-http-request": "^1.1.4",
     "obsidian-pack": "^1.0.0",
     "q": "^1.4.1",
