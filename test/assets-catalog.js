@@ -2,6 +2,7 @@
 
 var expect = require("expect.js");
 var fs = require("fs");
+var Q = require("q");
 
 var ObsidianAssetsCatalog = require("../lib/assets-catalog");
 
@@ -27,6 +28,20 @@ var imageBuffer = new Buffer([
 ]);
 
 var httpRequest = require("obsidian-http-request");
+
+function spyOn(object, methodName) {
+    var spy = {
+      calls: [],
+    };
+    var method = object[methodName];
+
+    object[methodName] = function() {
+      spy.calls.push(arguments);
+      return method.apply(object, arguments);
+    };
+
+    return spy;
+}
 
 describe("ObsidianAssetsCatalog", function() {
 
@@ -137,6 +152,26 @@ describe("ObsidianAssetsCatalog", function() {
                 });
         });
 
-    });
+        it("should only load the same pack once", function() {
+            var assets = new ObsidianAssetsCatalog();
+            var spy = spyOn(assets.$data.manager, 'importAssetPackageFromUrl');
 
+            assets.rootUrl = "files/";
+
+            return assets.importAssetCatalog(catalog)
+                .then(function(catalogName) {
+                    expect(catalogName).to.equal("catalog");
+                    expect(assets.assetLoaded("pack:pack/image")).not.to.be.ok();
+                    return assets.loadAsset("pack:pack/image");
+                }).then(function() {
+                    expect(assets.assetLoaded("pack:pack/image")).to.be.ok();
+                    return Q.all([
+                      assets.loadAsset("pack:pack/image"),
+                      assets.loadAsset("pack:pack/image")
+                    ]);
+                }).then(function() {
+                  expect(assets.assetLoaded("pack:pack/image")).to.be.ok();
+                });
+        });
+    });
 });
