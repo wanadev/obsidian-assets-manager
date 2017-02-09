@@ -2,10 +2,12 @@
 
 var expect = require("expect.js");
 var fs = require("fs");
+var Q = require("q");
 
 var ObsidianAssetsCatalog = require("../lib/assets-catalog");
 
 var catalog = require("./server/static/catalog.json");
+var catalog2 = require("./server/static/catalog2.json");
 
 var imageBuffer = new Buffer([
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
@@ -27,6 +29,29 @@ var imageBuffer = new Buffer([
 ]);
 
 var httpRequest = require("obsidian-http-request");
+
+function makeSpy(object, methodName) {
+    var method = object[methodName];
+    var spy = {
+        calls: [],
+    };
+
+    object[methodName] = function() {
+        spy.calls.push(arguments);
+        return method.apply(object, arguments);
+    };
+
+    return spy;
+}
+
+function makeDelay(object, methodName, time) {
+    var method = object[methodName];
+
+    object[methodName] = function() {
+        return method.apply(object, arguments)
+            .delay(time);
+    };
+}
 
 describe("ObsidianAssetsCatalog", function() {
 
@@ -137,6 +162,34 @@ describe("ObsidianAssetsCatalog", function() {
                 });
         });
 
-    });
+        it("should only load the same pack once", function() {
+            var assets = new ObsidianAssetsCatalog();
+            var spy = makeSpy(assets.$data.manager, 'importAssetPackageFromUrl');
+            var delay = makeDelay(assets.$data.manager, 'importAssetPackageFromUrl', 300);
 
+            assets.rootUrl = "files/";
+
+            return assets.importAssetCatalog(catalog2)
+                .then(function(catalogName) {
+                    expect(catalogName).to.equal("catalog2");
+                    expect(assets.assetLoaded("pack:pack2/image.png")).not.to.be.ok();
+                    expect(assets.assetLoaded("pack:pack2/image2.png")).not.to.be.ok();
+                    expect(assets.assetLoaded("pack:pack2/image3.png")).not.to.be.ok();
+
+                    return Q.all([
+                        assets.loadAsset("pack:pack2/image.png"),
+                        Q.delay(150).then(function() {
+                            return assets.loadAsset("pack:pack2/image2.png");
+                        }),
+                    ]).then(function() {
+                        return assets.loadAsset("pack:pack2/image3.png");
+                    });
+                }).then(function() {
+                    expect(assets.assetLoaded("pack:pack2/image.png")).to.be.ok();
+                    expect(assets.assetLoaded("pack:pack2/image2.png")).to.be.ok();
+                    expect(assets.assetLoaded("pack:pack2/image3.png")).to.be.ok();
+                    expect(spy.calls.length).to.eql(1);
+                });
+        });
+    });
 });
