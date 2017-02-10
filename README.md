@@ -32,6 +32,8 @@ Examples:
 
 ## Changelog
 
+* **1.4.1**:
+    * Prevents downloading the same pack multiple times
 * **1.4.0**:
     * Catalog can now manage individual assets
 * **1.3.4**:
