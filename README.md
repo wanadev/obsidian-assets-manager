@@ -32,6 +32,8 @@ Examples:
 
 ## Changelog
 
+* **1.4.2**:
+    * Fixes code that prevents error to be forwarded (#23)
 * **1.4.1**:
     * Prevents downloading the same pack multiple times
 * **1.4.0**:
