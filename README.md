@@ -32,6 +32,8 @@ Examples:
 
 ## Changelog
 
+* **1.4.4**:
+    * Getting package through proxy
 * **1.4.3**:
     * Getting catalog JSON through proxy
 * **1.4.2**:
