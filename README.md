@@ -1,5 +1,7 @@
 # Obsidian Assets Manager
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/wanadev/obsidian-assets-manager.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/wanadev/obsidian-assets-manager.svg?branch=master)](https://travis-ci.org/wanadev/obsidian-assets-manager)
 [![NPM Version](http://img.shields.io/npm/v/obsidian-assets-manager.svg?style=flat)](https://www.npmjs.com/package/obsidian-assets-manager)
 [![License](http://img.shields.io/npm/l/obsidian-assets-manager.svg?style=flat)](https://github.com/wanadev/obsidian-assets-manager/blob/master/LICENSE)
